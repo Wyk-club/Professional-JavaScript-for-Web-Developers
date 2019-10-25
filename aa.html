@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+<script>
+    // var name = 'Tom';
+    // (function(){
+    //     console.log(name,'name');
+    //     if(typeof name === 'undefined'){
+    //         var name = 'jack';
+    //         console.log('Goodbye'+name);
+    //     }else{
+    //         console.log('Hello'+name);
+    //     }
+    //     var name = 'Lily';
+    // })()
+
+    // let reg = /123/;
+    // console.log(typeof reg);
+
+    // var msg1;
+    // alert(msg1);
+    // alert(msg2);
+
+    // console.log(typeof msg1);
+    // console.log(typeof msg2);
+
+    // console.log(undefined == null);
+    // console.log(undefined === null);
+
+    // console.log(Number.MAX_VALUE,'最大值');
+    // console.log(Number.MIN_VALUE,'最小值');
+    // let a = Number.MAX_VALUE + 3e7;
+    // console.log(isFinite(a));
+
+    // let num1 = 9.23032;
+    // let num2 = 100;
+    // let res1 = parseInt(num1);
+    // console.log(res1);
+    // let res2 = parseFloat(num2);
+    // console.log(res2);
+
+    // '\x41'
+    // '\u03a3'
+    // let str1 = '\u03a3';
+    // console.log(str1);
+    // let str2 = '\x41';
+    // console.log(str2);
+
+    // let str = 'aaa';
+    // str = 'bbb';
+    // console.log(str);
+    //
+    // let obj = {
+    //     name: 'jack',
+    //     age: 18
+    // };
+    // console.log(obj.valueOf());
+
+    // var x = 1;
+    // function test(){
+    //     console.log(x);
+    //     var x = 'hello world';
+    //     console.log(x);
+    // }
+    // test();
+
+    // var res = ['1','2','3'].map(parseInt);
+    // console.log(res);
+
+    // console.log(1);
+    // setTimeout(function(){
+    //     console.log(2);
+    // },0)
+    //
+    // new Promise(resolve=>{
+    //     console.log(3);
+    //     resolve();
+    // }).then(function(){
+    //     console.log(4);
+    // }).then(function(){
+    //     console.log(5);
+    // })
+
+    let arr = [1,2,1,24,5,2];
+    let res = arr.filter((item,index)=>{
+        return arr.indexOf(item) == index;
+    });
+    console.log(res);
+</script>
+</body>
+</html>
