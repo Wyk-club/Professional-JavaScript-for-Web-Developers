@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+    var a1 = 1;
+    var a2 = "233";
+    var a3 = false;
+    var a4 = undefined;
+    var a5 = null;
+
+    var a6 = {
+        name: 'jack'
+    };
+    var a7 = [1,2,3];
+    var a8 = function () {
+        console.log('test');
+    };
+    var a9 = /^3/;
+
+    console.log(typeof a1,'typeof a1'); // number
+    console.log(typeof a2,'typeof a2'); // string
+    console.log(typeof a3,'typeof a3'); // boolean
+    console.log(typeof a4,'typeof a4'); // undefined
+    console.log(typeof a5,'typeof a5'); // object
+    console.log(typeof a6,'typeof a6'); // object
+    console.log(typeof a7,'typeof a7'); // object
+    console.log(typeof a8,'typeof a8'); // function
+    console.log(typeof a9,'typeof a9'); // object
+
+    console.log(a6 instanceof Object,'a6 instanceof Object'); // true
+    console.log(a7 instanceof Object,'a7 instanceof Object'); // true
+    console.log(a8 instanceof Object,'a8 instanceof Object'); // true
+    console.log(a9 instanceof Object,'a9 instanceof Object'); // true
+
+    console.log(a7 instanceof Array,'a7 instanceof Array'); // true
+    console.log(a8 instanceof Function,'a8 instance Function'); // true
+    console.log(a9 instanceof RegExp,'a9 instance RegExp'); // true
+</script>
+</html>
