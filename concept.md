@@ -734,3 +734,186 @@ function doAdd (num1,num2) {
 ECMAScript函数不能像传统意义上那样实现重载。而在其他语言(如Java)中，可以为一个函数编写两个定义，只要这两个定义的签名(接受的参数的类型和数量)不同即可。如前所述，ECMAScript函数没有签名，因为其参数是由包含零或多个值的数组来表示的。而没有函数签名，真正的重载是不可能做到的。
 
 如果在ECMAScript中定义了两个名字相同的函数，则该名字只属于后定义的函数。
+
+# 第四章 变量、作用域和内存问题
+
+## 01 基本类型和引用类型的值
+
+**基本类型值**指的是简单的数据段。基本数据类型是按值访问的，因为可以操作保存在变量中的实际的值。
+
+**引用类型值**指那些可能由多个值构成的对象。JavaScript不允许直接访问内存中的位置，也就是说不能直接操作对象的内存空间。在操作对象时，可能操作的是对象的引用(当复制保存着对象的某个变量时，操作的是对象的引用；但在为对象添加属性时，操作的是实际的对象)。
+
+### 001 动态的属性
+
+对于引用类型的值，我们可以为其添加属性和方法，也可以改变和删除其属性和方法。
+
+```javascript
+var person = new Object();
+person.name = "Nicholas";
+alert(person.name); // "Nicholas"
+```
+
+
+
+但是，我们不能给基本类型的值添加属性，尽管这样不会导致任何错误。
+
+```javascript
+var name = "Nicholas";
+name.age = 27;
+alert(name.age); // undefined
+```
+
+这说明只能给引用类型值动态地添加属性，以便将来使用。
+
+ ### 002 复制变量值
+
+在从一个变量向另一个变量复制基本类型值和引用类型值时，也存在不同。
+
+如果从一个变量向另一个变量复制基本类型的值，会在变量对象上创建一个新值，然后把该值复制到为新变量分配的位置上。
+
+```javascript
+var num1 = 5;
+var num2 = num1;
+```
+
+在此，num1中保存的值是5。当使用num1的值来初始化num2时，num2中也保存了值5。但num2中的5与num1中的5是完全独立的，该值值是num1中5的一个副本。此后，这两个变量可以参与任何操作而不会相互影响。
+
+复制前的变量对象：
+
+|      |                |
+| ---- | -------------- |
+|      |                |
+| num1 | 5 (Number类型) |
+
+复制后的变量对象：
+
+|      |                |
+| ---- | -------------- |
+| num2 | 5 (Number类型) |
+| num1 | 5 (Number类型) |
+
+当从一个变量向另一个变量复制引用类型的值时，同样也会将存储在变量对象中的值复制一份放到为新变量分配的空间中。不同的是，这个值的副本实际上是一个指针，而这个指针指向存储在堆中的一个对象。复制操作结束后，两个变量实际上将引用同一个对象。因此，改变其中一个变量，就会影响另一个变量。
+
+```javascript
+var obj1 = new Object();
+var obj2 = obj1;
+obj1.name = "Nicholas";
+alert(obj2.name); // "Nicholas"
+```
+
+首先，变量obj1保存了一个对象新的实例。然后，这个值被复制到了obj2中；换句话说，obj1和obj2都指向同一个对象。这样，为obj1添加name属性后，可以通过obj2来访问这个属性，因为这两个变量引用的都是同一个对象。
+
+### 003 传递参数
+
+ECMAScript中所有函数的参数都是**按值传递**的。也就是说，把函数外部的值复制给函数内部的参数，就和把值从一个变量复制到另一个变量一样。基本类型值的传递如同基本类型变量的复制一样，而引用类型值的传递，则如同引用类型变量的复制一样。有不少开发人员在这一点上可能感到困惑，因为访问变量有按值和按引用两种方式，而参数只能按值传递。
+
+在向参数传递基本类型的值时，被传递的值会被复制给一个局部变量(即命名参数，或者用ECMAScript的概念来说，就是arguments对象中的一个元素)。
+
+在向参数传递引用类型的值时，会把这个值在内存中的地址复制给一个局部变量，因此这个局部变量的变化会反映在函数的外部。看下面这个例子：
+
+```javascript
+function addTen(num) {
+    num += 10;
+    return num;
+}
+var count = 20;
+var result = addTen(count);
+alert(count); // 20，没有变化
+alert(result); // 30
+```
+
+这里的函数addTen()有一个参数num，而参数实际上是函数的**局部变量**。在调用这个函数时，变量count作为参数被传递给函数，这个变量的值是20。于是，数值20被复制给参数num以便在addTen()中使用。在函数内部，参数num的值被加上了10，但这一变化不会影响函数外部的count变量。参数num和count互不认识，它们仅仅是具有相同的值。加入num是按引用传递的话，那么变量count的值也将变成30，从而反映函数内部的修改。当然，使用数值等基本类型的值来说明按值传递参数比较简单，但如果使用对象，那问题就不怎么好理解了。再举一个例子：
+
+```javascript
+function setName(obj) {
+    obj.name = "Nicholas";
+}
+var person = new Object();
+setName(person);
+alert(person.name); // "Nicholas"
+```
+
+以上代码中创建一个对象，并将其保存在了变量person中。然后，这个变量被传递到setName()函数中之后就被复制给了obj。在这个函数内部，obj和person引用的是同一个对象。换句话说，即使这个变量是按值传递的，obj也会按引用来访问同一个对象。于是，当在函数内部为obj添加name属性后，函数外部的person也将有所反映；因为person指向的对象在堆内存中只有一个，而且是全局对象。有许多开发人员错误地认为：在局部作用域中修改的对象会在全局作用域中反映出来，就说明参数是按引用传递的。为了证明对象是按值传递的，我们再看一看下面这个经过修改的例子：
+
+```javascript
+function setName() {
+    obj.name = "Nicholas";
+    obj = new Object();
+    obj.name = "Greg";
+}
+var person = new Object();
+setName(person);
+alert(person.name); // "Nicholas"
+```
+
+这个例子与前一个例子的唯一区别，就是在setName()函数中添加了两行代码：一行代码为obj重新定义了一个对象，另一行代码为该对象定义了一个带有不同值的name属性。在把person传递给setName()后，其name属性被设置为"Nicholas"。然后，又将一个新对象赋给变量obj，同时将其name属性设置为"Greg"。如果person是按引用传递的，那么person就会被自动修改为指向其name属性值为“Greg”的新对象。但是，当接下来再访问person.name时，显示的值仍然是"Nicholas"。这说明即使在函数内部修改了参数的值，但原始的引用仍然保持未变。实际上，当在函数内部重写obj时，这个变量引用的就是一个局部对象了。而这个局部对象会在函数执行完毕后立即被销毁。
+
+* 注意
+
+可以把ECMAScript函数的参数想象成局部变量。
+
+### 004 检测类型
+
+要检测一个变量是不是基本数据类型。使用typeof操作符是最佳的工具。说得更具体点，typeof操作符是确定一个变量是字符串、数值、布尔值，还是undefined的最佳工具。如果变量的值是一个对象或null，则typeof操作符会像下面例子中所示的那样返回"object"。
+
+虽然在检测基本数据类型时typeof是非常得力的助手，但在检测引用数据类型的值时，这个操作符的用处不大。通常，我们并不想知道某个值是对象，而是想知道它是什么类型的对象。为此，ECMAScript提供了instanceof操作符，其语法如下所示：
+
+```javascript
+result = variable instanceof constructor
+```
+
+如果变量是给定引用类型(根据它的原型链来识别)的实例，那么instanceof操作符就会返回true。请看下面的例子。
+
+根据规定，所有引用类型的值都是Object的实例。因此，在检测一个引用类型值和Object构造函数时，instanceof操作符始终会返回true。当然，如果使用instanceof操作符检测基本类型的值，则该操作符始终会返回false，因为基本类型不是对象。
+
+```javascript
+var a1 = 1;
+    var a2 = "233";
+    var a3 = false;
+    var a4 = undefined;
+    var a5 = null;
+
+    var a6 = {
+        name: 'jack'
+    };
+    var a7 = [1,2,3];
+    var a8 = function () {
+        console.log('test');
+    };
+    var a9 = /^3/;
+
+    console.log(typeof a1,'typeof a1'); // number
+    console.log(typeof a2,'typeof a2'); // string
+    console.log(typeof a3,'typeof a3'); // boolean
+    console.log(typeof a4,'typeof a4'); // undefined
+    console.log(typeof a5,'typeof a5'); // object
+    console.log(typeof a6,'typeof a6'); // object
+    console.log(typeof a7,'typeof a7'); // object
+    console.log(typeof a8,'typeof a8'); // function
+    console.log(typeof a9,'typeof a9'); // object
+
+    console.log(a6 instanceof Object,'a6 instanceof Object'); // true
+    console.log(a7 instanceof Object,'a7 instanceof Object'); // true
+    console.log(a8 instanceof Object,'a8 instanceof Object'); // true
+    console.log(a9 instanceof Object,'a9 instanceof Object'); // true
+
+    console.log(a7 instanceof Array,'a7 instanceof Array'); // true
+    console.log(a8 instanceof Function,'a8 instance Function'); // true
+    console.log(a9 instanceof RegExp,'a9 instance RegExp'); // true
+```
+
+### 005 执行环境及作用域
+
+* **执行环境**(execution context)：有时也简称为“环境”。执行环境定义了变量或函数有权访问的其他数据，决定了他们各自的行为。
+
+全局执行环境是最外围的执行环境。根据ECMAScript实现所在的宿主环境不同，表示执行环境的对象也不一样。在Web浏览器中，全局执行环境被认为是window对象，因此所有全局变量和函数都是作为window对象的属性和方法创建的。
+
+某个执行环境中的所有代码执行完毕后，该环境被销毁，保存在其中的所有变量和函数定义也随之销毁(全局执行环境直到应用程序退出——例如关闭网页或浏览器——时才会被销毁)。
+
+每个函数都有自己的执行环境。当执行流进入一个函数时，函数的环境就会被推入一个环境栈中。而在函数执行之后，栈将其环境弹出，把控制权返回给之前的执行环境。ECMAScript程序中的执行流正式由这个方便的机制控制着。
+
+* **变量对象(variable object)**：环境中定义的所有变量和函数都保存在这个对象中。虽然我们编写的代码无法访问这个对象，但解析器在处理数据时会在后台使用它。
+* **作用域链**(scope chain)：当代码在一个环境中执行时，会创建变量对象的一个作用域链。作用域链的涌入，是保证对执行环境有权访问的所有变量和函数的有序访问。
+
+作用域链的前端，始终都是当前执行的代码所在环境的变量对象。
+
